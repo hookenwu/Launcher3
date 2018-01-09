@@ -59,6 +59,7 @@ public class WidgetsModel {
             PackageManager pm = context.getPackageManager();
             InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
 
+
             // Widgets
             AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(context);
             for (AppWidgetProviderInfo widgetInfo : widgetManager.getAllProviders(packageUser)) {

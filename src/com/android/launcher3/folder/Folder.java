@@ -202,7 +202,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         setAlwaysDrawnWithCacheEnabled(false);
         Resources res = getResources();
         mExpandDuration = res.getInteger(R.integer.config_folderExpandDuration);
-        mMaterialExpandDuration = res.getInteger(R.integer.config_materialFolderExpandDuration);
+//        mMaterialExpandDuration = res.getInteger(R.integer.config_materialFolderExpandDuration);
+        mMaterialExpandDuration = res.getInteger(R.integer.config_materialFolderExpandDuration) * 100;
         mMaterialExpandStagger = res.getInteger(R.integer.config_materialFolderExpandStagger);
 
         if (sDefaultFolderName == null) {
@@ -604,6 +605,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                         + getParent());
             }
         }
+
 
         mIsOpen = true;
 

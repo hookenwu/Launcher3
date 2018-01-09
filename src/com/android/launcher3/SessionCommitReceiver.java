@@ -36,6 +36,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 
 import java.util.List;
@@ -78,7 +79,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
     }
 
     public static void queueAppIconAddition(Context context, String packageName, UserHandle user) {
-        List<LauncherActivityInfo> activities = LauncherAppsCompat.getInstance(context)
+        List<LauncherActivityInfoCompat> activities = LauncherAppsCompat.getInstance(context)
                 .getActivityList(packageName, user);
         if (activities == null || activities.isEmpty()) {
             // no activity found

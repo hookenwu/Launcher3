@@ -16,7 +16,9 @@
 
 package com.android.launcher3.accessibility;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
@@ -30,6 +32,7 @@ import com.android.launcher3.Utilities;
 /**
  * Accessibility delegate with actions pointing to various Overview entry points.
  */
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class OverviewAccessibilityDelegate extends AccessibilityDelegate {
 
     private static final int OVERVIEW = R.string.accessibility_action_overview;

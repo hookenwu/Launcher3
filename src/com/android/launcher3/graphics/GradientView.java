@@ -77,27 +77,40 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
         Launcher launcher = Launcher.getLauncher(context);
         this.mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() ? 0 : 100;
         this.mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
-        this.mWallpaperColorInfo = WallpaperColorInfo.getInstance(launcher);
         mAlphaColors = getResources().getInteger(R.integer.extracted_color_gradient_alpha);
-        updateColors();
+
+        if(Utilities.ATLEAST_LOLLIPOP){
+            this.mWallpaperColorInfo = WallpaperColorInfo.getInstance(launcher);
+            updateColors();
+        }else{
+            this.mWallpaperColorInfo = null;
+        }
+
+
         mAlphaGradientMask = createDitheredAlphaMask();
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mWallpaperColorInfo.addOnChangeListener(this);
+        if(Utilities.ATLEAST_LOLLIPOP){
+            mWallpaperColorInfo.addOnChangeListener(this);
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mWallpaperColorInfo.removeOnChangeListener(this);
+        if(Utilities.ATLEAST_LOLLIPOP) {
+            mWallpaperColorInfo.removeOnChangeListener(this);
+        }
     }
 
     @Override
     public void onExtractedColorsChanged(WallpaperColorInfo info) {
-        updateColors();
+        if(Utilities.ATLEAST_LOLLIPOP){
+            updateColors();
+        }
         invalidate();
     }
 

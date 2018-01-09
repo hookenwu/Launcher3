@@ -32,6 +32,7 @@ import android.text.TextUtils;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 
 import java.net.URISyntaxException;
@@ -76,7 +77,7 @@ public class PackageManagerHelper {
     }
 
     public Intent getAppLaunchIntent(String pkg, UserHandle user) {
-        List<LauncherActivityInfo> activities = mLauncherApps.getActivityList(pkg, user);
+        List<LauncherActivityInfoCompat> activities = mLauncherApps.getActivityList(pkg, user);
         return activities.isEmpty() ? null :
                 AppInfo.makeLaunchIntent(activities.get(0));
     }

@@ -372,9 +372,14 @@ public class Launcher extends BaseActivity
             mLauncherCallbacks.preOnCreate();
         }
 
-        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
-        wallpaperColorInfo.setOnThemeChangeListener(this);
-        overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
+        if(Utilities.ATLEAST_LOLLIPOP){
+            WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
+            wallpaperColorInfo.setOnThemeChangeListener(this);
+            overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
+        }else if(Utilities.IS_KITKAT){
+
+        }
+
 
         super.onCreate(savedInstanceState);
 
@@ -395,7 +400,8 @@ public class Launcher extends BaseActivity
         mModel = app.setLauncher(this);
         mModelWriter = mModel.getWriter(mDeviceProfile.isVerticalBarLayout());
         mIconCache = app.getIconCache();
-        mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
+        mAccessibilityDelegate = Utilities.ATLEAST_LOLLIPOP
+                ? new LauncherAccessibilityDelegate(this) :null;
 
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
@@ -3981,6 +3987,13 @@ public class Launcher extends BaseActivity
 
     @Override
     public boolean onKeyShortcut(int keyCode, KeyEvent event) {
+
+        boolean result = super.onKeyShortcut(keyCode, event);
+
+        if(Utilities.IS_KITKAT) {
+            return result;
+        }
+
         if (event.hasModifiers(KeyEvent.META_CTRL_ON)) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_A:
@@ -4008,7 +4021,7 @@ public class Launcher extends BaseActivity
                     break;
             }
         }
-        return super.onKeyShortcut(keyCode, event);
+        return result;
     }
 
     public static CustomAppWidget getCustomAppWidget(String name) {

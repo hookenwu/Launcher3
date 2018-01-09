@@ -184,9 +184,26 @@ public class LauncherAppState {
     }
 
     private static LauncherProvider getLocalProvider(Context context) {
-        try (ContentProviderClient cl = context.getContentResolver()
-                .acquireContentProviderClient(LauncherProvider.AUTHORITY)) {
-            return (LauncherProvider) cl.getLocalContentProvider();
+
+        if(Utilities.ATLEAST_LOLLIPOP){
+            try (ContentProviderClient cl = context.getContentResolver()
+                    .acquireContentProviderClient(LauncherProvider.AUTHORITY)) {
+                return (LauncherProvider) cl.getLocalContentProvider();
+            }
         }
+        else if(Utilities.IS_KITKAT){
+            ContentProviderClient cl = null;
+            try{
+                cl = context.getContentResolver()
+                        .acquireContentProviderClient(LauncherProvider.AUTHORITY);
+                return (LauncherProvider)cl.getLocalContentProvider();
+            }finally {
+                cl.release();
+            }
+
+        }else {
+            throw new RuntimeException("Launcher 3 Not support Api 19 below!");
+        }
+
     }
 }

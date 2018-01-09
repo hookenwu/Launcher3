@@ -54,6 +54,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.config.FeatureFlags;
@@ -184,7 +185,11 @@ public class DragView extends View {
         mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
 
         mBlurSizeOutline = getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
-        setElevation(getResources().getDimension(R.dimen.drag_elevation));
+
+        if(Utilities.ATLEAST_LOLLIPOP){
+            setElevation(getResources().getDimension(R.dimen.drag_elevation));
+        }
+
     }
 
     /**
@@ -315,7 +320,7 @@ public class DragView extends View {
      */
     private Drawable getFullDrawable(ItemInfo info, LauncherAppState appState, Object[] outObj) {
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-            LauncherActivityInfo activityInfo = LauncherAppsCompat.getInstance(mLauncher)
+            LauncherActivityInfoCompat activityInfo = LauncherAppsCompat.getInstance(mLauncher)
                     .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;
             return (activityInfo != null) ? appState.getIconCache()

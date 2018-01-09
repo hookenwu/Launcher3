@@ -16,6 +16,7 @@
 
 package com.android.launcher3.compat;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 import android.os.UserHandle;
@@ -36,8 +39,10 @@ import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigAct
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.PackageUserKey;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     protected final LauncherApps mLauncherApps;
@@ -52,13 +57,27 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
     }
 
     @Override
-    public List<LauncherActivityInfo> getActivityList(String packageName, UserHandle user) {
-        return mLauncherApps.getActivityList(packageName, user);
+    public List<LauncherActivityInfoCompat> getActivityList(String packageName, UserHandle user) {
+        List<LauncherActivityInfo> list = mLauncherApps.getActivityList(packageName, user);
+        if (list.size() == 0) {
+            return Collections.emptyList();
+        }
+        ArrayList<LauncherActivityInfoCompat> compatList =
+                new ArrayList<LauncherActivityInfoCompat>(list.size());
+        for (LauncherActivityInfo info : list) {
+            compatList.add(new LauncherActivityInfoCompatVL(info));
+        }
+        return compatList;
     }
 
     @Override
-    public LauncherActivityInfo resolveActivity(Intent intent, UserHandle user) {
-        return mLauncherApps.resolveActivity(intent, user);
+    public LauncherActivityInfoCompat resolveActivity(Intent intent, UserHandle user) {
+        LauncherActivityInfo activity = mLauncherApps.resolveActivity(intent, user);
+        if (activity != null) {
+            return new LauncherActivityInfoCompatVL(activity);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -202,5 +221,46 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         }
         return result;
     }
+
+    @TargetApi(Build.VERSION_CODES.N_MR1)
+    @Override
+    public void pinShortcuts(String packageName, List<String> shortcutIds, UserHandle user) {
+        mLauncherApps.pinShortcuts(packageName,shortcutIds,user);
+    }
+
+    @TargetApi(Build.VERSION_CODES.N_MR1)
+    @Override
+    public void startShortcut(ShortcutInfo shortcut, Rect sourceBounds, Bundle startActivityOptions) {
+        mLauncherApps.startShortcut(shortcut,sourceBounds,startActivityOptions);
+    }
+
+    @TargetApi(Build.VERSION_CODES.N_MR1)
+    @Override
+    public void startShortcut(String packageName,
+                              String shortcutId,
+                              Rect sourceBounds,
+                              Bundle startActivityOptions,
+                              UserHandle user) {
+        mLauncherApps.startShortcut(packageName,shortcutId,sourceBounds,startActivityOptions,user);
+    }
+
+    @TargetApi(Build.VERSION_CODES.N_MR1)
+    @Override
+    public Drawable getShortcutIconDrawable(ShortcutInfo shortcut, int density) {
+        return mLauncherApps.getShortcutIconDrawable(shortcut,density);
+    }
+
+    @TargetApi(Build.VERSION_CODES.N_MR1)
+    @Override
+    public List<ShortcutInfo> getShortcuts(LauncherApps.ShortcutQuery query, UserHandle user) {
+        return mLauncherApps.getShortcuts(query,user);
+    }
+
+    @TargetApi(Build.VERSION_CODES.N_MR1)
+    @Override
+    public boolean hasShortcutHostPermission() {
+        return mLauncherApps.hasShortcutHostPermission();
+    }
+
 }
 

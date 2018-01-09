@@ -16,6 +16,8 @@
 
 package com.android.launcher3.keyboard;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +28,7 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 
@@ -47,16 +50,24 @@ public class CustomActionsPopup implements OnMenuItemClickListener {
         mLauncher = launcher;
         mIcon = icon;
         PopupContainerWithArrow container = PopupContainerWithArrow.getOpen(launcher);
-        if (container != null) {
-            mDelegate = container.getAccessibilityDelegate();
-        } else {
-            mDelegate = launcher.getAccessibilityDelegate();
+        if(Utilities.ATLEAST_LOLLIPOP){
+            if (container != null) {
+                mDelegate = container.getAccessibilityDelegate();
+            } else {
+                mDelegate = launcher.getAccessibilityDelegate();
+            }
+        }else {
+            mDelegate = null;
         }
     }
 
     private List<AccessibilityAction> getActionList() {
         if (mIcon == null || !(mIcon.getTag() instanceof ItemInfo)) {
             return Collections.EMPTY_LIST;
+        }
+
+        if(Utilities.IS_KITKAT){
+            return new ArrayList<>();
         }
 
         AccessibilityNodeInfo info = AccessibilityNodeInfo.obtain();
@@ -79,8 +90,11 @@ public class CustomActionsPopup implements OnMenuItemClickListener {
         PopupMenu popup = new PopupMenu(mLauncher, mIcon);
         popup.setOnMenuItemClickListener(this);
         Menu menu = popup.getMenu();
-        for (AccessibilityAction action : actions) {
-            menu.add(Menu.NONE, action.getId(), Menu.NONE, action.getLabel());
+
+        if(Utilities.ATLEAST_LOLLIPOP){
+            for (AccessibilityAction action : actions) {
+                menu.add(Menu.NONE, action.getId(), Menu.NONE, action.getLabel());
+            }
         }
         popup.show();
         return true;
