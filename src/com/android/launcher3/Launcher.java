@@ -1857,10 +1857,16 @@ public class Launcher extends BaseActivity
 
         TextKeyListener.getInstance().release();
 
-        ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
-                .removeAccessibilityStateChangeListener(this);
+        if(Utilities.ATLEAST_LOLLIPOP){
+            ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
+                    .removeAccessibilityStateChangeListener(this);
+        }else{
 
-        WallpaperColorInfo.getInstance(this).setOnThemeChangeListener(null);
+        }
+
+        if(Utilities.ATLEAST_LOLLIPOP){
+            WallpaperColorInfo.getInstance(this).setOnThemeChangeListener(null);
+        }
 
         LauncherAnimUtils.onDestroyActivity();
 

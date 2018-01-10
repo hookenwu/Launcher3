@@ -570,8 +570,11 @@ public final class Utilities {
     }
 
     public static boolean isPowerSaverOn(Context context) {
-        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        return powerManager.isPowerSaveMode();
+        if(Utilities.ATLEAST_LOLLIPOP){
+            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            return powerManager.isPowerSaveMode();
+        }
+        return false;
     }
 
     public static boolean isWallpaperAllowed(Context context) {
