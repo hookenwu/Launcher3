@@ -16,6 +16,8 @@
 
 package com.android.launcher3.config;
 
+import com.android.launcher3.Utilities;
+
 /**
  * Defines a set of flags used to control various launcher behaviors.
  *
@@ -44,7 +46,7 @@ abstract class BaseFlags {
     // When enabled uses the AllAppsRadialGradientAndScrimDrawable for all apps
     public static final boolean LAUNCHER3_GRADIENT_ALL_APPS = true;
     // When enabled allows use of physics based motions in the Launcher.
-    public static final boolean LAUNCHER3_PHYSICS = true;
+    public static final boolean LAUNCHER3_PHYSICS = true ;
     // When enabled allows use of spring motions on the icons.
     public static final boolean LAUNCHER3_SPRING_ICONS = true;
 
