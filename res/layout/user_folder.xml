@@ -57,7 +57,7 @@
             android:singleLine="true"
             android:textColor="?android:attr/textColorTertiary"
             android:includeFontPadding="false"
-            android:textColorHighlight="?android:attr/colorControlHighlight"
+            android:textColorHighlight="#545454"
             android:textColorHint="?android:attr/textColorHint"
             android:textSize="@dimen/folder_label_text_size" />
 
