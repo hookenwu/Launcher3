@@ -59,7 +59,7 @@ import java.text.NumberFormat;
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
+public class BubbleTextView extends android.support.v7.widget.AppCompatTextView implements ItemInfoUpdateReceiver {
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;

@@ -33,6 +33,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.ModelWriter;
@@ -55,7 +56,7 @@ public class ManagedProfileHeuristic {
     private static final long AUTO_ADD_TO_FOLDER_DURATION = 8 * 60 * 60 * 1000;
 
     public static void onAllAppsLoaded(final Context context,
-            List<LauncherActivityInfo> apps, UserHandle user) {
+                                       List<LauncherActivityInfoCompat> apps, UserHandle user) {
         if (Process.myUserHandle().equals(user)) {
             return;
         }
@@ -74,7 +75,7 @@ public class ManagedProfileHeuristic {
         }
 
         InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_BULK_ADD);
-        for (LauncherActivityInfo app : apps) {
+        for (LauncherActivityInfoCompat app : apps) {
             // Queue all items which should go in the work folder.
             if (app.getFirstInstallTime() < ufi.addIconToFolderTime) {
                 InstallShortcutReceiver.queueActivityInfo(app, context);

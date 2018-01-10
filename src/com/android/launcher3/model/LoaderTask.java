@@ -48,6 +48,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -801,7 +802,7 @@ public class LoaderTask implements Runnable {
         for (UserHandle user : profiles) {
             // Query for the set of apps
             final long qiaTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
-            final List<LauncherActivityInfo> apps = mLauncherApps.getActivityList(null, user);
+            final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "getActivityList took "
                         + (SystemClock.uptimeMillis()-qiaTime) + "ms for user " + user);
@@ -815,7 +816,7 @@ public class LoaderTask implements Runnable {
             boolean quietMode = mUserManager.isQuietModeEnabled(user);
             // Create the ApplicationInfos
             for (int i = 0; i < apps.size(); i++) {
-                LauncherActivityInfo app = apps.get(i);
+                LauncherActivityInfoCompat app = apps.get(i);
                 // This builds the icon bitmaps.
                 mBgAllAppsList.add(new AppInfo(app, user, quietMode), app);
             }

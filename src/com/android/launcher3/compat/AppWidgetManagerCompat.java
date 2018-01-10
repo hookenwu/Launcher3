@@ -42,8 +42,10 @@ public abstract class AppWidgetManagerCompat {
             if (sInstance == null) {
                 if (Utilities.ATLEAST_OREO) {
                     sInstance = new AppWidgetManagerCompatVO(context.getApplicationContext());
-                } else {
+                } else if(Utilities.ATLEAST_LOLLIPOP){
                     sInstance = new AppWidgetManagerCompatVL(context.getApplicationContext());
+                }else{
+                    sInstance = new AppWidgetManagerCompatV16(context.getApplicationContext());
                 }
             }
             return sInstance;

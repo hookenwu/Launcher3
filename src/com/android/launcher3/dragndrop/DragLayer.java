@@ -131,7 +131,12 @@ public class DragLayer extends InsettableFrameLayout {
 
         mIsRtl = Utilities.isRtl(getResources());
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
-        mWallpaperColorInfo = WallpaperColorInfo.getInstance(getContext());
+
+        if(Utilities.ATLEAST_LOLLIPOP){
+            mWallpaperColorInfo = WallpaperColorInfo.getInstance(getContext());
+        }else {
+            mWallpaperColorInfo = null;
+        }
     }
 
     public void setup(Launcher launcher, DragController dragController,
@@ -155,8 +160,13 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     public void onAccessibilityStateChanged(boolean isAccessibilityEnabled) {
-        mPinchListener = FeatureFlags.LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW || isAccessibilityEnabled
-                ? null : new PinchToOverviewListener(mLauncher);
+
+        if(Utilities.ATLEAST_LOLLIPOP){
+            mPinchListener = FeatureFlags.LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW || isAccessibilityEnabled
+                    ? null : new PinchToOverviewListener(mLauncher);
+        }else{
+            mPinchListener = null;
+        }
     }
 
     public boolean isEventOverPageIndicator(MotionEvent ev) {
@@ -311,7 +321,10 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     private boolean isInAccessibleDrag() {
-        return mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
+        if(Utilities.ATLEAST_LOLLIPOP){
+            return mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
+        }
+        return false;
     }
 
     @Override
@@ -643,6 +656,8 @@ public class DragLayer extends InsettableFrameLayout {
         };
         animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, toScale, toScale,
                 onCompleteRunnable, ANIMATION_END_DISAPPEAR, duration, anchorView);
+
+
     }
 
     public void animateViewIntoPosition(final DragView view, final int fromX, final int fromY,
@@ -880,8 +895,10 @@ public class DragLayer extends InsettableFrameLayout {
             }
             // for super light wallpaper it needs to be darken for contrast to workspace
             // for dark wallpapers the text is white so darkening works as well
-            int color = ColorUtils.compositeColors(0x66000000, mWallpaperColorInfo.getMainColor());
-            canvas.drawColor(ColorUtils.setAlphaComponent(color, alpha));
+            if(Utilities.ATLEAST_LOLLIPOP){
+                int color = ColorUtils.compositeColors(0x66000000, mWallpaperColorInfo.getMainColor());
+                canvas.drawColor(ColorUtils.setAlphaComponent(color, alpha));
+            }
             canvas.restore();
         }
 

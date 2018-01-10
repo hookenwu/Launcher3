@@ -16,8 +16,10 @@
 
 package com.android.launcher3.dynamicui;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
@@ -36,6 +38,7 @@ import java.util.List;
 /**
  * Implementation of tonal color extraction
  **/
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class ColorExtractionAlgorithm {
 
     public static ColorExtractionAlgorithm newInstance(Context context) {

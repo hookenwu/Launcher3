@@ -501,10 +501,10 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
 
     public void finishPullUp() {
         mHotseat.setVisibility(View.INVISIBLE);
-        if (hasSpringAnimationHandler()) {
-            mSpringAnimationHandler.remove(mSearchSpring);
-            mSpringAnimationHandler.reset();
-        }
+//        if (hasSpringAnimationHandler()) {
+//            mSpringAnimationHandler.remove(mSearchSpring);
+//            mSpringAnimationHandler.reset();
+//        }
         setProgress(0f);
     }
 
@@ -546,9 +546,9 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         mHotseat.bringToFront();
         mCaretController = new AllAppsCaretController(
                 mWorkspace.getPageIndicator().getCaretDrawable(), mLauncher);
-        mAppsView.getSearchUiManager().addOnScrollRangeChangeListener(this);
+//        mAppsView.getSearchUiManager().addOnScrollRangeChangeListener(this);
         mSpringAnimationHandler = mAppsView.getSpringAnimationHandler();
-        mSearchSpring = mAppsView.getSearchUiManager().getSpringForFling();
+//        mSearchSpring = mAppsView.getSearchUiManager().getSpringForFling();
     }
 
     private boolean hasSpringAnimationHandler() {

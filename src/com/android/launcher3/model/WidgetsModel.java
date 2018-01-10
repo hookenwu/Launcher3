@@ -18,6 +18,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
+import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
@@ -59,11 +60,18 @@ public class WidgetsModel {
             PackageManager pm = context.getPackageManager();
             InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
 
+
             // Widgets
             AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(context);
             for (AppWidgetProviderInfo widgetInfo : widgetManager.getAllProviders(packageUser)) {
-                widgetsAndShortcuts.add(new WidgetItem(LauncherAppWidgetProviderInfo
-                        .fromProviderInfo(context, widgetInfo), pm, idp));
+                if(Utilities.ATLEAST_LOLLIPOP){
+                    widgetsAndShortcuts.add(new WidgetItem(LauncherAppWidgetProviderInfo
+                            .fromProviderInfo(context, widgetInfo), pm, idp));
+                }else {
+                    widgetsAndShortcuts.add(new WidgetItem(LauncherAppWidgetProviderInfo
+                            .fromProviderInfo(context, widgetInfo), pm, idp,
+                            UserHandleCompat.myUserHandle().getUser()));
+                }
             }
 
             // Shortcuts

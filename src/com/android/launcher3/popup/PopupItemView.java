@@ -24,6 +24,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.util.AttributeSet;
@@ -69,7 +70,15 @@ public abstract class PopupItemView extends FrameLayout {
         mRoundedCornerBitmap = Bitmap.createBitmap(radius, radius, Bitmap.Config.ALPHA_8);
         Canvas canvas = new Canvas();
         canvas.setBitmap(mRoundedCornerBitmap);
-        canvas.drawArc(0, 0, radius*2, radius*2, 180, 90, true, mBackgroundClipPaint);
+        if(Utilities.ATLEAST_LOLLIPOP){
+            canvas.drawArc(0, 0, radius*2, radius*2,
+                    180, 90,
+                    true, mBackgroundClipPaint);
+        }else{
+            canvas.drawArc(new RectF(0, 0, radius*2, radius*2),
+                    180,90, true,mBackgroundClipPaint);
+        }
+
         mBackgroundClipPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
 
         mIsRtl = Utilities.isRtl(getResources());
@@ -94,8 +103,22 @@ public abstract class PopupItemView extends FrameLayout {
             return;
         }
 
-        int saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null);
-        super.dispatchDraw(canvas);
+        if(Utilities.ATLEAST_LOLLIPOP){
+            int saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null);
+            super.dispatchDraw(canvas);
+            realDraw(canvas);
+            canvas.restoreToCount(saveCount);
+        }else {
+            canvas.save();
+            super.dispatchDraw(canvas);
+            realDraw(canvas);
+            canvas.restore();
+        }
+
+    }
+
+    void realDraw(Canvas canvas){
+
 
         // Clip children to this item's rounded corners.
         int cornerWidth = mRoundedCornerBitmap.getWidth();
@@ -121,9 +144,8 @@ public abstract class PopupItemView extends FrameLayout {
             mMatrix.postTranslate(0, canvas.getHeight() - cornerHeight);
             canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
         }
-
-        canvas.restoreToCount(saveCount);
     }
+
 
     /**
      * Creates a round rect drawable (with the specified corners unrounded)

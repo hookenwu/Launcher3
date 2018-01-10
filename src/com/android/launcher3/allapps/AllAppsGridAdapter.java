@@ -125,14 +125,14 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
         @Override
         public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
-                RecyclerView.State state) {
+                                               RecyclerView.State state) {
             return super.getRowCountForAccessibility(recycler, state) -
                     getRowsNotForAccessibility(mApps.getAdapterItems().size() - 1);
         }
 
         @Override
         public void onInitializeAccessibilityNodeInfoForItem(RecyclerView.Recycler recycler,
-                RecyclerView.State state, View host, AccessibilityNodeInfoCompat info) {
+                                                             RecyclerView.State state, View host, AccessibilityNodeInfoCompat info) {
             super.onInitializeAccessibilityNodeInfoForItem(recycler, state, host, info);
 
             ViewGroup.LayoutParams lp = host.getLayoutParams();
@@ -182,8 +182,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             if (isIconViewType(mApps.getAdapterItems().get(position).viewType)) {
                 return 1;
             } else {
-                    // Section breaks span the full width
-                    return mAppsPerRow;
+                // Section breaks span the full width
+                return mAppsPerRow;
             }
         }
     }
@@ -379,6 +379,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         if (FeatureFlags.LAUNCHER3_PHYSICS && isViewType(type, VIEW_TYPE_MASK_HAS_SPRINGS)) {
             mSpringAnimationHandler.add(holder.itemView, holder);
         }
+
     }
 
     @Override
@@ -431,7 +432,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
         /**
          * @param spring A new or recycled SpringAnimation.
-         * @param vh The ViewHolder that {@param spring} is related to.
+         * @param vh     The ViewHolder that {@param spring} is related to.
          */
         @Override
         public void update(SpringAnimation spring, ViewHolder vh) {
@@ -483,13 +484,13 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         /**
          * @return The app position is the position of the app in the Adapter if we ignored all
          * other view types.
-         *
+         * <p>
          * The first app is at position 0, and the first app each following row is at a
          * position that is a multiple of {@param appsPerRow}.
-         *
+         * <p>
          * ie. If there are 5 apps per row, and there are two rows of apps:
-         *     0 1 2 3 4
-         *     5 6 7 8 9
+         * 0 1 2 3 4
+         * 5 6 7 8 9
          */
         private int getAppPosition(int position, int numPredictedApps, int appsPerRow) {
             if (position < numPredictedApps) {

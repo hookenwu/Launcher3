@@ -41,6 +41,20 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
         spanY = Math.min(info.spanY, idp.numRows);
     }
 
+    public WidgetItem(LauncherAppWidgetProviderInfo info,
+                      PackageManager pm ,
+                      InvariantDeviceProfile idp,
+                      UserHandle handle){
+        super(info.provider,handle);
+        label = Utilities.trim(info.getLabel(pm));
+        widgetInfo = info;
+        activityInfo = null;
+
+        spanX = Math.min(info.spanX, idp.numColumns);
+        spanY = Math.min(info.spanY, idp.numRows);
+    }
+
+
     public WidgetItem(ShortcutConfigActivityInfo info) {
         super(info.getComponent(), info.getUser());
         label = Utilities.trim(info.getLabel());
