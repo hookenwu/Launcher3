@@ -31,6 +31,7 @@ import android.util.Log;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.LauncherAppsCompat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,11 +58,13 @@ public class DeepShortcutManager {
         }
     }
 
-    private final LauncherApps mLauncherApps;
+    private final LauncherAppsCompat mLauncherApps;
     private boolean mWasLastCallSuccess;
 
     private DeepShortcutManager(Context context) {
-        mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+
+//        mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+        mLauncherApps = LauncherAppsCompat.getInstance(context);
     }
 
     public static boolean supportsShortcuts(ItemInfo info) {

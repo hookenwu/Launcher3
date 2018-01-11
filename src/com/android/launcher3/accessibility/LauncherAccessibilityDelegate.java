@@ -1,9 +1,11 @@
 package com.android.launcher3.accessibility;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.DialogInterface;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -41,6 +43,7 @@ import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class LauncherAccessibilityDelegate extends AccessibilityDelegate implements DragListener {
 
     private static final String TAG = "LauncherAccessibilityDelegate";

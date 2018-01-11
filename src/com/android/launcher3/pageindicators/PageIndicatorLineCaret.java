@@ -131,9 +131,15 @@ public class PageIndicatorLineCaret extends PageIndicator {
         mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
         setCaretDrawable(new CaretDrawable(context));
 
-        boolean darkText = WallpaperColorInfo.getInstance(context).supportsDarkText();
-        mActiveAlpha = darkText ? BLACK_ALPHA : WHITE_ALPHA;
-        mLinePaint.setColor(darkText ? Color.BLACK : Color.WHITE);
+        if(Utilities.ATLEAST_LOLLIPOP){
+            boolean darkText = WallpaperColorInfo.getInstance(context).supportsDarkText();
+            mActiveAlpha = darkText ? BLACK_ALPHA : WHITE_ALPHA;
+            mLinePaint.setColor(darkText ? Color.BLACK : Color.WHITE);
+        }else {
+            mActiveAlpha = WHITE_ALPHA;
+            mLinePaint.setColor(Color.WHITE);
+        }
+
     }
 
     @Override

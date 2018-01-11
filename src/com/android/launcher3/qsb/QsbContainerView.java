@@ -88,7 +88,12 @@ public class QsbContainerView extends FrameLayout {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             mQsbWidgetHost = new QsbWidgetHost(getActivity());
-            mOrientation = getContext().getResources().getConfiguration().orientation;
+            if(Utilities.ATLEAST_MARSHMALLOW){
+                mOrientation = getContext().getResources().getConfiguration().orientation;
+            }else{
+                mOrientation = getActivity().getResources().getConfiguration().orientation;
+            }
+
         }
 
         private FrameLayout mWrapper;
@@ -137,8 +142,14 @@ public class QsbContainerView extends FrameLayout {
                 }
 
                 widgetId = mQsbWidgetHost.allocateAppWidgetId();
-                isWidgetBound = widgetManager.bindAppWidgetIdIfAllowed(
-                        widgetId, mWidgetInfo.getProfile(), mWidgetInfo.provider, opts);
+
+                if(Utilities.ATLEAST_LOLLIPOP){
+                    isWidgetBound = widgetManager.bindAppWidgetIdIfAllowed(
+                            widgetId, mWidgetInfo.getProfile(), mWidgetInfo.provider, opts);
+                }else{
+                    isWidgetBound = widgetManager.bindAppWidgetIdIfAllowed(widgetId,mWidgetInfo.provider);
+                }
+
                 if (!isWidgetBound) {
                     mQsbWidgetHost.deleteAppWidgetId(widgetId);
                     widgetId = -1;

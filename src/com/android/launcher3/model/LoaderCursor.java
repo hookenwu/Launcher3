@@ -40,6 +40,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -256,7 +257,7 @@ public class LoaderCursor extends CursorWrapper {
         Intent newIntent = new Intent(Intent.ACTION_MAIN, null);
         newIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         newIntent.setComponent(componentName);
-        LauncherActivityInfo lai = LauncherAppsCompat.getInstance(mContext)
+        LauncherActivityInfoCompat lai = LauncherAppsCompat.getInstance(mContext)
                 .resolveActivity(newIntent, user);
         if ((lai == null) && !allowMissingTarget) {
             Log.d(TAG, "Missing activity found in getShortcutInfo: " + componentName);

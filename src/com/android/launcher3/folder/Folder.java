@@ -605,6 +605,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             }
         }
 
+
         mIsOpen = true;
 
         mContent.completePendingPageChanges();
@@ -675,7 +676,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                     mFolderName.animate().setDuration(FOLDER_NAME_ANIMATION_DURATION)
                         .translationX(0)
                         .setInterpolator(AnimationUtils.loadInterpolator(
-                                mLauncher, android.R.interpolator.fast_out_slow_in));
+                                mLauncher, Utilities.ATLEAST_LOLLIPOP
+                                        ? android.R.interpolator.fast_out_slow_in
+                                        : android.R.interpolator.decelerate_quad));
                     mPageIndicator.playEntryAnimation();
 
                     if (updateAnimationFlag) {

@@ -131,7 +131,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
         mStartDragThreshold = getResources().getDimensionPixelSize(
                 R.dimen.deep_shortcuts_start_drag_threshold);
-        mAccessibilityDelegate = new ShortcutMenuAccessibilityDelegate(mLauncher);
+        mAccessibilityDelegate = Utilities.ATLEAST_LOLLIPOP
+                ? new ShortcutMenuAccessibilityDelegate(mLauncher) : null;
         mIsRtl = Utilities.isRtl(getResources());
     }
 
@@ -222,17 +223,18 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
         int numShortcuts = shortcutViews.size() + systemShortcutViews.size();
         int numNotifications = notificationKeys.size();
+        final CharSequence des =  originalIcon.getContentDescription();
         if (numNotifications == 0) {
             setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
-                    numShortcuts, originalIcon.getContentDescription().toString()));
+                    numShortcuts, des != null ? des:"" ));
         } else {
             setContentDescription(getContext().getString(
                     R.string.shortcuts_menu_with_notifications_description, numShortcuts,
-                    numNotifications, originalIcon.getContentDescription().toString()));
+                    numNotifications,des != null ? des:"" ));
         }
 
         // Add the arrow.
-        final int arrowHorizontalOffset = resources.getDimensionPixelSize(isAlignedWithStart() ?
+        int arrowHorizontalOffset = resources.getDimensionPixelSize(isAlignedWithStart() ?
                 R.dimen.popup_arrow_horizontal_offset_start :
                 R.dimen.popup_arrow_horizontal_offset_end);
         mArrow = addArrowView(arrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
@@ -368,10 +370,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         float radius = getItemViewAt(0).getBackgroundRadius();
         mStartRect.set(startPoint.x, startPoint.y, startPoint.x, startPoint.y);
         mEndRect.set(0, top, getMeasuredWidth(), top + itemsTotalHeight);
-        final ValueAnimator revealAnim = new RoundedRectRevealOutlineProvider
-                (radius, radius, mStartRect, mEndRect).createRevealAnimator(this, false);
-        revealAnim.setDuration(revealDuration);
-        revealAnim.setInterpolator(revealInterpolator);
+
 
         Animator fadeIn = ObjectAnimator.ofFloat(this, ALPHA, 0, 1);
         fadeIn.setDuration(revealDuration);
@@ -396,7 +395,18 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         });
 
         mOpenCloseAnimator = openAnim;
-        openAnim.playSequentially(revealAnim, arrowScale);
+
+        if(Utilities.ATLEAST_LOLLIPOP){
+            final ValueAnimator revealAnim = new RoundedRectRevealOutlineProvider
+                    (radius, radius, mStartRect, mEndRect).createRevealAnimator(this, false);
+            revealAnim.setDuration(revealDuration);
+            revealAnim.setInterpolator(revealInterpolator);
+            openAnim.playSequentially(revealAnim, arrowScale);
+        }else{
+            openAnim.playSequentially(arrowScale);
+        }
+
+
         openAnim.start();
     }
 
@@ -587,7 +597,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             int radius = getResources().getDimensionPixelSize(R.dimen.popup_arrow_corner_radius);
             arrowPaint.setPathEffect(new CornerPathEffect(radius));
             arrowView.setBackground(arrowDrawable);
-            arrowView.setElevation(getElevation());
+            if(Utilities.ATLEAST_LOLLIPOP){
+                arrowView.setElevation(getElevation());
+            }
         }
         addView(arrowView, mIsAboveIcon ? getChildCount() : 0, layoutParams);
         return arrowView;
@@ -889,12 +901,14 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         if (mEndRect.isEmpty()) {
             mEndRect.set(0, top, getMeasuredWidth(), top + itemsTotalHeight);
         }
-        final ValueAnimator revealAnim = new RoundedRectRevealOutlineProvider(
-                radius, radius, mStartRect, mEndRect).createRevealAnimator(this, true);
-        revealAnim.setDuration(revealDuration);
-        revealAnim.setInterpolator(revealInterpolator);
-        closeAnim.play(revealAnim);
 
+        if(Utilities.ATLEAST_LOLLIPOP){
+            final ValueAnimator revealAnim = new RoundedRectRevealOutlineProvider(
+                    radius, radius, mStartRect, mEndRect).createRevealAnimator(this, true);
+            revealAnim.setDuration(revealDuration);
+            revealAnim.setInterpolator(revealInterpolator);
+            closeAnim.play(revealAnim);
+        }
         Animator fadeOut = ObjectAnimator.ofFloat(this, ALPHA, 0);
         fadeOut.setDuration(revealDuration);
         fadeOut.setInterpolator(revealInterpolator);

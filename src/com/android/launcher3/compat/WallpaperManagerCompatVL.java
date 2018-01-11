@@ -123,10 +123,13 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
     }
 
     private void reloadColors() {
-        JobInfo job = new JobInfo.Builder(Utilities.WALLPAPER_COMPAT_JOB_ID,
-                new ComponentName(mContext, ColorExtractionService.class))
-                .setMinimumLatency(0).build();
-        ((JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE)).schedule(job);
+
+        if(Utilities.ATLEAST_LOLLIPOP){
+            JobInfo job = new JobInfo.Builder(Utilities.WALLPAPER_COMPAT_JOB_ID,
+                    new ComponentName(mContext, ColorExtractionService.class))
+                    .setMinimumLatency(0).build();
+            ((JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE)).schedule(job);
+        }
     }
 
     private void handleResult(String result) {

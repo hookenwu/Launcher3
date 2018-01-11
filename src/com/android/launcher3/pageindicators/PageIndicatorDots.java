@@ -22,12 +22,14 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.View;
@@ -69,7 +71,9 @@ public class PageIndicatorDots extends PageIndicator {
         public void set(PageIndicatorDots obj, Float pos) {
             obj.mCurrentPosition = pos;
             obj.invalidate();
-            obj.invalidateOutline();
+            if(Utilities.ATLEAST_LOLLIPOP){
+                obj.invalidateOutline();
+            }
         }
     };
 
@@ -110,7 +114,13 @@ public class PageIndicatorDots extends PageIndicator {
         mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCirclePaint.setStyle(Style.FILL);
         mDotRadius = getResources().getDimension(R.dimen.page_indicator_dot_size) / 2;
-        setOutlineProvider(new MyOutlineProver());
+
+        if(Utilities.ATLEAST_LOLLIPOP){
+            setOutlineProvider(new MyOutlineProver());
+        }else{
+
+        }
+
 
         mActiveColor = Themes.getColorAccent(context);
         mInActiveColor = Themes.getAttrColor(context, android.R.attr.colorControlHighlight);
@@ -206,7 +216,9 @@ public class PageIndicatorDots extends PageIndicator {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mEntryAnimationRadiusFactors = null;
-                invalidateOutline();
+                if(Utilities.ATLEAST_LOLLIPOP){
+                    invalidateOutline();
+                }
                 invalidate();
             }
         });
@@ -298,6 +310,7 @@ public class PageIndicatorDots extends PageIndicator {
         return sTempRect;
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private class MyOutlineProver extends ViewOutlineProvider {
 
         @Override

@@ -16,6 +16,8 @@
 
 package com.android.launcher3.accessibility;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
@@ -35,6 +37,7 @@ import java.util.ArrayList;
  * Extension of {@link LauncherAccessibilityDelegate} with actions specific to shortcuts in
  * deep shortcuts menu.
  */
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDelegate {
 
     private static final int DISMISS_NOTIFICATION = R.id.action_dismiss_notification;

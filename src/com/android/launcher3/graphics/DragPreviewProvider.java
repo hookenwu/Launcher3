@@ -196,7 +196,7 @@ public class DragPreviewProvider {
         }
 
         outPos[0] = Math.round(outPos[0] -
-                (preview.getWidth() - scale * mView.getWidth() * mView.getScaleX()) / 2);
+                (preview.getWidth() -  scale * mView.getWidth() * mView.getScaleX()) / 2);
         outPos[1] = Math.round(outPos[1] - (1 - scale) * preview.getHeight() / 2
                 - previewPadding / 2);
         return scale;

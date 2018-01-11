@@ -469,7 +469,7 @@ public class Workspace extends PagedView
         }
 
         // Always enter the spring loaded mode
-        mLauncher.enterSpringLoadedDragMode();
+         mLauncher.enterSpringLoadedDragMode();
     }
 
     public void deferRemoveExtraEmptyScreen() {
@@ -521,6 +521,9 @@ public class Workspace extends PagedView
     @Override
     public void initParentViews(View parent) {
         super.initParentViews(parent);
+        if(Utilities.IS_KITKAT){
+            return;
+        }
         mPageIndicator.setAccessibilityDelegate(new OverviewAccessibilityDelegate());
     }
 
@@ -678,7 +681,7 @@ public class Workspace extends PagedView
         mScreenOrder.add(insertIndex, screenId);
         addView(newScreen, insertIndex);
 
-        if (mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
+        if (Utilities.ATLEAST_LOLLIPOP && mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
             newScreen.enableAccessibleDrag(true, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
         }
 
@@ -984,7 +987,7 @@ public class Workspace extends PagedView
             }
         }
 
-        boolean isInAccessibleDrag = mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
+
 
         // We enforce at least one page to add new items to. In the case that we remove the last
         // such screen, we convert the last screen to the empty screen
@@ -1001,8 +1004,13 @@ public class Workspace extends PagedView
                     pageShift++;
                 }
 
-                if (isInAccessibleDrag) {
-                    cl.enableAccessibleDrag(false, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
+                if(Utilities.ATLEAST_LOLLIPOP){
+
+                    boolean isInAccessibleDrag = mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
+                    if (isInAccessibleDrag) {
+                        cl.enableAccessibleDrag(false, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
+                    }
+
                 }
 
                 removeView(cl);
@@ -2015,6 +2023,11 @@ public class Workspace extends PagedView
     }
 
     public void updateAccessibilityFlags() {
+
+        if(!Utilities.ATLEAST_LOLLIPOP){
+            return;
+        }
+
         // TODO: Update the accessibility flags appropriately when dragging.
         if (!mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
             int total = getPageCount();
@@ -2036,6 +2049,9 @@ public class Workspace extends PagedView
 
             // No custom action for the first page.
             if (!FeatureFlags.QSB_ON_FIRST_SCREEN || pageNo > 0) {
+                if(Utilities.IS_KITKAT){
+                    return;
+                }
                 if (mPagesAccessibilityDelegate == null) {
                     mPagesAccessibilityDelegate = new OverviewScreenAccessibilityDelegate(this);
                 }
@@ -2179,7 +2195,8 @@ public class Workspace extends PagedView
             mDragSourceInternal = (ShortcutAndWidgetContainer) child.getParent();
         }
 
-        if (child instanceof BubbleTextView && !dragOptions.isAccessibleDrag) {
+
+        if (child instanceof BubbleTextView && !dragOptions.isAccessibleDrag && Utilities.ATLEAST_LOLLIPOP) {
             PopupContainerWithArrow popupContainer = PopupContainerWithArrow
                     .showForIcon((BubbleTextView) child);
             if (popupContainer != null) {

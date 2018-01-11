@@ -141,7 +141,7 @@ public abstract class ShortcutConfigActivityInfo {
 
         @Override
         public Drawable getFullResIcon(IconCache cache) {
-            return cache.getFullResIcon(mInfo);
+            return cache.getFullResIcon(new LauncherActivityInfoCompatVL(mInfo));
         }
 
         @Override

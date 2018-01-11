@@ -23,7 +23,7 @@
     android:paddingRight="@dimen/dynamic_grid_edge_margin"
     android:fontFamily="sans-serif-medium"
     android:textSize="14sp"
-    android:textColor="?android:attr/colorAccent"
+    android:textColor="#545454"
     android:text="@string/all_apps_search_market_message"
     android:textAllCaps="true"
     android:focusable="true"

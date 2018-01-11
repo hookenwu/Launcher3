@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 
 import java.net.URISyntaxException;
@@ -80,7 +81,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
             user = item.user;
         }
         if (intent != null) {
-            LauncherActivityInfo info = LauncherAppsCompat.getInstance(context)
+            LauncherActivityInfoCompat info = LauncherAppsCompat.getInstance(context)
                     .resolveActivity(intent, user);
             if (info != null
                     && (info.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) == 0) {

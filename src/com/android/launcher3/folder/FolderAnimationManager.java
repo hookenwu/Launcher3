@@ -19,8 +19,10 @@ package com.android.launcher3.folder;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -28,6 +30,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.support.v4.graphics.ColorUtils;
 import android.util.Property;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.android.launcher3.BubbleTextView;
@@ -143,7 +146,7 @@ public class FolderAnimationManager {
         // We want to create a small X offset for the preview items, so that they follow their
         // expected path to their final locations. ie. an icon should not move right, if it's final
         // location is to its left. This value is arbitrarily defined.
-        int previewItemOffsetX = (int) (previewSize / 2);
+        int previewItemOffsetX = 0;
         if (Utilities.isRtl(mContext.getResources())) {
             previewItemOffsetX = (int) (lp.width * initialScale - initialSize - previewItemOffsetX);
         }
@@ -197,19 +200,22 @@ public class FolderAnimationManager {
         play(a, getAnimator(mFolder, SCALE_PROPERTY, initialScale, finalScale));
         play(a, getAnimator(mFolderBackground, "color", initialColor, finalColor));
         play(a, mFolderIcon.mFolderName.createTextAlphaAnimator(!mIsOpening));
-        RoundedRectRevealOutlineProvider outlineProvider = new RoundedRectRevealOutlineProvider(
-                initialRadius, finalRadius, startRect, endRect) {
-            @Override
-            public boolean shouldRemoveElevationDuringAnimation() {
-                return true;
-            }
-        };
-        play(a, outlineProvider.createRevealAnimator(mFolder, !mIsOpening));
 
-        // Animate the elevation midway so that the shadow is not noticeable in the background.
-        int midDuration = mDuration / 2;
-        Animator z = getAnimator(mFolder, View.TRANSLATION_Z, -mFolder.getElevation(), 0);
-        play(a, z, mIsOpening ? midDuration : 0, midDuration);
+        if(Utilities.ATLEAST_LOLLIPOP){
+            RoundedRectRevealOutlineProvider outlineProvider = new RoundedRectRevealOutlineProvider(
+                    initialRadius, finalRadius, startRect, endRect) {
+                @Override
+                public boolean shouldRemoveElevationDuringAnimation() {
+                    return true;
+                }
+            };
+            play(a, outlineProvider.createRevealAnimator(mFolder, !mIsOpening));
+
+            // Animate the elevation midway so that the shadow is not noticeable in the background.
+            int midDuration = mDuration / 2;
+            Animator z = getAnimator(mFolder, View.TRANSLATION_Z, -mFolder.getElevation(), 0);
+            play(a, z, mIsOpening ? midDuration : 0, midDuration);
+        }
 
         a.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -217,7 +223,9 @@ public class FolderAnimationManager {
                 super.onAnimationEnd(animation);
                 mFolder.setTranslationX(0.0f);
                 mFolder.setTranslationY(0.0f);
-                mFolder.setTranslationZ(0.0f);
+                if(Utilities.ATLEAST_LOLLIPOP){
+                    mFolder.setTranslationZ(0.0f);
+                }
                 mFolder.setScaleX(1f);
                 mFolder.setScaleY(1f);
             }
@@ -367,8 +375,28 @@ public class FolderAnimationManager {
     }
 
     private Animator getAnimator(GradientDrawable drawable, String property, int v1, int v2) {
-        return mIsOpening
-                ? ObjectAnimator.ofArgb(drawable, property, v1, v2)
-                : ObjectAnimator.ofArgb(drawable, property, v2, v1);
+
+        if(Utilities.ATLEAST_LOLLIPOP){
+            return mIsOpening
+                    ? ObjectAnimator.ofArgb(drawable, property, v1, v2)
+                    : ObjectAnimator.ofArgb(drawable, property, v2, v1);
+        }else{
+            return  mIsOpening
+                    ? getColorAnimatorV19(drawable,v1,v2)
+                    : getColorAnimatorV19(drawable,v2,v1);
+        }
+
     }
+
+    public Animator getColorAnimatorV19(final GradientDrawable drawable, int v1, int v2){
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), v1, v2);
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                drawable.setColor((Integer) valueAnimator.getAnimatedValue());
+            }
+        });
+        return colorAnimation;
+    }
+
 }
