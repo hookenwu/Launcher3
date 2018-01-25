@@ -116,7 +116,16 @@ public abstract class ButtonDropTarget extends TextView
     @Override
     public final void onDragEnter(DragObject d) {
         d.dragView.setColor(mHoverColor);
-        animateTextColor(mHoverColor);
+        if (Utilities.ATLEAST_LOLLIPOP) {
+            animateTextColor(mHoverColor);
+        } else {
+            if (mCurrentFilter == null) {
+                mCurrentFilter = new ColorMatrix();
+            }
+            DragView.setColorScale(mHoverColor, mCurrentFilter);
+            mDrawable.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
+            setTextColor(mHoverColor);
+        }
         if (d.stateAnnouncer != null) {
             d.stateAnnouncer.cancel();
         }
@@ -129,7 +138,12 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     protected void resetHoverColor() {
-        animateTextColor(mOriginalTextColor.getDefaultColor());
+        if (Utilities.ATLEAST_LOLLIPOP) {
+            animateTextColor(mOriginalTextColor.getDefaultColor());
+        } else {
+            mDrawable.setColorFilter(null);
+            setTextColor(mOriginalTextColor);
+        }
     }
 
     private void animateTextColor(int targetColor) {
