@@ -21,6 +21,7 @@ import android.animation.FloatArrayEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -29,6 +30,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -146,6 +148,7 @@ public abstract class ButtonDropTarget extends TextView
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void animateTextColor(int targetColor) {
         if (mCurrentColorAnim != null) {
             mCurrentColorAnim.cancel();
