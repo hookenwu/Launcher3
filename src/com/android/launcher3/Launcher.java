@@ -57,6 +57,7 @@ import android.os.SystemClock;
 import android.os.Trace;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -3622,6 +3623,15 @@ public class Launcher extends BaseActivity
 
         InstallShortcutReceiver.disableAndFlushInstallQueue(
                 InstallShortcutReceiver.FLAG_LOADER_RUNNING, this);
+
+        if (Utilities.ATLEAST_MARSHMALLOW) {
+            boolean hasNotificationAccess = false;
+            for (String packageName : NotificationManagerCompat.getEnabledListenerPackages(this)) {
+                hasNotificationAccess |= packageName.equals(getApplicationContext().getPackageName());
+            }
+            if (!hasNotificationAccess)
+                startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+        }
 
         NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
 

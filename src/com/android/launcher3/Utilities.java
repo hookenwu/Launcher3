@@ -113,6 +113,9 @@ public final class Utilities {
     public static final boolean ATLEAST_JB_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
 
+    public static final boolean ATLEASTO =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+
     /**
      * Indicates if the device has a debug build. Should only be used to store additional info or
      * add extra logging and not for changing the app behavior.
