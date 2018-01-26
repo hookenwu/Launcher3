@@ -19,6 +19,7 @@ package com.android.launcher3.shortcuts;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.ShortcutQuery;
@@ -157,17 +158,19 @@ public class DeepShortcutManager {
     }
 
     @TargetApi(25)
-    public void startShortcut(String packageName, String id, Rect sourceBounds,
+    public void startShortcut(String packageName, String id, Intent intent,
           Bundle startActivityOptions, UserHandle user) {
         if (Utilities.ATLEAST_NOUGAT_MR1) {
             try {
-                mLauncherApps.startShortcut(packageName, id, sourceBounds,
+                mLauncherApps.startShortcut(packageName, id, intent.getSourceBounds(),
                         startActivityOptions, user);
                 mWasLastCallSuccess = true;
             } catch (SecurityException|IllegalStateException e) {
                 Log.e(TAG, "Failed to start shortcut", e);
                 mWasLastCallSuccess = false;
             }
+        }else{
+            mContext.startActivity(intent, startActivityOptions);
         }
     }
 
