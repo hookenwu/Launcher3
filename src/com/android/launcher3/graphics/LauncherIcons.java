@@ -361,6 +361,7 @@ public class LauncherIcons {
             return unbadgedBitmap;
         }
         unbadgedBitmap = LauncherIcons.addShadowToIcon(unbadgedBitmap, context);
+
         return badgeWithBitmap(unbadgedBitmap, getShortcutInfoBadge(shortcutInfo, cache), context);
     }
 
