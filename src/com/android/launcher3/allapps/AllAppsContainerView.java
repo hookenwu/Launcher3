@@ -68,8 +68,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private final LinearLayoutManager mLayoutManager;
 
     private AllAppsRecyclerView mAppsRecyclerView;
-//    private SearchUiManager mSearchUiManager;
-//    private View mSearchContainer;
+    private SearchUiManager mSearchUiManager;
+    private View mSearchContainer;
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
 
@@ -133,7 +133,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      */
     public void addOrUpdateApps(List<AppInfo> apps) {
         mApps.addOrUpdateApps(apps);
-//        mSearchUiManager.refreshSearchResult();
+        mSearchUiManager.refreshSearchResult();
     }
 
     public void updatePromiseAppProgress(PromiseAppInfo app) {
@@ -152,18 +152,18 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      */
     public void removeApps(List<AppInfo> apps) {
         mApps.removeApps(apps);
-//        mSearchUiManager.refreshSearchResult();
+        mSearchUiManager.refreshSearchResult();
     }
 
     /**
      * Returns whether the view itself will handle the touch event or not.
      */
     public boolean shouldContainerScroll(MotionEvent ev) {
-//        // IF the MotionEvent is inside the search box, and the container keeps on receiving
-//        // touch input, container should move down.
-//        if (mLauncher.getDragLayer().isEventOverView(mSearchContainer, ev)) {
-//            return true;
-//        }
+        // IF the MotionEvent is inside the search box, and the container keeps on receiving
+        // touch input, container should move down.
+        if (mLauncher.getDragLayer().isEventOverView(mSearchContainer, ev)) {
+            return true;
+        }
 
         int[] point = new int[2];
         point[0] = (int) ev.getX();
@@ -189,7 +189,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     public void reset() {
         // Reset the search bar and base recycler view after transitioning home
         mAppsRecyclerView.scrollToTop();
-//        mSearchUiManager.reset();
+        mSearchUiManager.reset();
     }
 
     @Override
@@ -219,9 +219,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             mAppsRecyclerView.setSpringAnimationHandler(mSpringAnimationHandler);
         }
 
-//        mSearchContainer = findViewById(R.id.search_container_all_apps);
-//        mSearchUiManager = (SearchUiManager) mSearchContainer;
-//        mSearchUiManager.initialize(mApps, mAppsRecyclerView);
+        mSearchContainer = findViewById(R.id.search_container_all_apps);
+        mSearchUiManager = (SearchUiManager) mSearchContainer;
+        mSearchUiManager.initialize(mApps, mAppsRecyclerView);
 
 
         FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(mAppsRecyclerView);
@@ -234,9 +234,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         getContentView().setBackground(null);
     }
 
-//    public SearchUiManager getSearchUiManager() {
-//        return mSearchUiManager;
-//    }
+    public SearchUiManager getSearchUiManager() {
+        return mSearchUiManager;
+    }
 
     @Override
     public View getTouchDelegateTargetView() {
@@ -263,7 +263,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-//        mSearchUiManager.preDispatchKeyEvent(event);
+        mSearchUiManager.preDispatchKeyEvent(event);
         return super.dispatchKeyEvent(event);
     }
 

@@ -63,6 +63,9 @@
         <!--<include-->
             <!--layout="?android:attr/keyboardLayout"-->
             <!--android:id="@id/search_container_all_apps" />-->
+        <include
+            layout="@layout/search_container_all_apps"
+            android:id="@id/search_container_all_apps" />
 
         <include layout="@layout/all_apps_fast_scroller" />
 
