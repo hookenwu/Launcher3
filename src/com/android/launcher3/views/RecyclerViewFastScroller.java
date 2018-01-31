@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -284,18 +285,36 @@ public class RecyclerViewFastScroller extends View {
         if (mThumbOffsetY < 0) {
             return;
         }
-        int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
-        canvas.translate(getWidth() / 2, mRv.getPaddingTop());
-        // Draw the track
-        float halfW = mWidth / 2;
-        canvas.drawRoundRect(-halfW, 0, halfW, mRv.getScrollbarTrackHeight(),
-                mWidth, mWidth, mTrackPaint);
 
-        canvas.translate(0, mThumbOffsetY);
-        halfW += mThumbPadding;
-        float r = mWidth + mThumbPadding + mThumbPadding;
-        canvas.drawRoundRect(-halfW, 0, halfW, mThumbHeight, r, r, mThumbPaint);
-        canvas.restoreToCount(saveCount);
+        if(Utilities.ATLEAST_LOLLIPOP){
+            int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+            canvas.translate(getWidth() / 2, mRv.getPaddingTop());
+            // Draw the track
+            float halfW = mWidth / 2;
+            canvas.drawRoundRect(-halfW, 0, halfW, mRv.getScrollbarTrackHeight(),
+                    mWidth, mWidth, mTrackPaint);
+
+            canvas.translate(0, mThumbOffsetY);
+            halfW += mThumbPadding;
+            float r = mWidth + mThumbPadding + mThumbPadding;
+            canvas.drawRoundRect(-halfW, 0, halfW, mThumbHeight, r, r, mThumbPaint);
+            canvas.restoreToCount(saveCount);
+        }else{
+            canvas.save();
+            canvas.translate(getWidth() / 2, mRv.getPaddingTop());
+            // Draw the track
+            float halfW = mWidth / 2;
+            canvas.drawRoundRect(
+                    new RectF(-halfW, 0, halfW, mRv.getScrollbarTrackHeight()),
+                    mWidth,mWidth,mTrackPaint);
+            canvas.translate(0, mThumbOffsetY);
+            halfW += mThumbPadding;
+            float r = mWidth + mThumbPadding + mThumbPadding;
+            canvas.drawRoundRect(new RectF(-halfW, 0, halfW, mThumbHeight),
+                    r, r, mThumbPaint);
+            canvas.restore();
+        }
+
     }
 
 

@@ -20,8 +20,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
@@ -55,17 +57,19 @@ public abstract class LauncherAppsCompat {
             if (sInstance == null) {
                 if (Utilities.ATLEAST_OREO) {
                     sInstance = new LauncherAppsCompatVO(context.getApplicationContext());
-                } else {
+                } else if (Utilities.ATLEAST_LOLLIPOP){
                     sInstance = new LauncherAppsCompatVL(context.getApplicationContext());
+                }else{
+                    sInstance = new LauncherAppsCompatV16(context.getApplicationContext());
                 }
             }
             return sInstance;
         }
     }
 
-    public abstract List<LauncherActivityInfo> getActivityList(String packageName,
+    public abstract List<LauncherActivityInfoCompat> getActivityList(String packageName,
             UserHandle user);
-    public abstract LauncherActivityInfo resolveActivity(Intent intent,
+    public abstract LauncherActivityInfoCompat resolveActivity(Intent intent,
             UserHandle user);
     public abstract void startActivityForProfile(ComponentName component, UserHandle user,
             Rect sourceBounds, Bundle opts);
@@ -80,6 +84,26 @@ public abstract class LauncherAppsCompat {
             UserHandle user);
     public abstract List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(
             @Nullable PackageUserKey packageUser);
+
+    public abstract void pinShortcuts(String packageName, List<String> shortcutIds, UserHandle user);
+
+    public abstract void startShortcut (ShortcutInfo shortcut,
+                               Rect sourceBounds,
+                               Bundle startActivityOptions);
+
+    public abstract void startShortcut (String packageName,
+                                        String shortcutId,
+                                        Rect sourceBounds,
+                                        Bundle startActivityOptions,
+                                        UserHandle user);
+
+    public abstract Drawable getShortcutIconDrawable (ShortcutInfo shortcut,
+                                      int density);
+
+    public abstract List<ShortcutInfo> getShortcuts (LauncherApps.ShortcutQuery query,
+                                                     UserHandle user);
+
+    public abstract boolean hasShortcutHostPermission ();
 
     public void showAppDetailsForProfile(ComponentName component, UserHandle user) {
         showAppDetailsForProfile(component, user, null, null);

@@ -21,6 +21,7 @@ import android.view.animation.Interpolator;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.pageindicators.CaretDrawable;
 import com.android.launcher3.touch.SwipeDetector;
 
@@ -45,7 +46,9 @@ public class AllAppsCaretController {
         final long caretAnimationDuration = launcher.getResources().getInteger(
                 R.integer.config_caretAnimationDuration);
         final Interpolator caretInterpolator = AnimationUtils.loadInterpolator(launcher,
-                android.R.interpolator.fast_out_slow_in);
+                Utilities.ATLEAST_LOLLIPOP
+                        ? android.R.interpolator.fast_out_slow_in
+                        : android.R.interpolator.decelerate_quad);
 
         // We will set values later
         mCaretAnimator = ObjectAnimator.ofFloat(mCaretDrawable, "caretProgress", 0);

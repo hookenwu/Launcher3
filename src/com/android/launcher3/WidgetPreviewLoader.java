@@ -318,7 +318,7 @@ public class WidgetPreviewLoader {
         Drawable drawable = null;
         if (info.previewImage != 0) {
             try {
-                drawable = info.loadPreviewImage(mContext, 0);
+                drawable = info.loadPreviewImageCompat(mContext, 0);
             } catch (OutOfMemoryError e) {
                 Log.w(TAG, "Error loading widget preview for: " + info.provider, e);
                 // During OutOfMemoryError, the previous heap stack is not affected. Catching

@@ -23,15 +23,18 @@ import android.animation.PropertyValuesHolder;
 import android.animation.RectEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.TargetApi;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.Property;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 
 /**
  * A helper class to draw background of a focused view.
@@ -70,7 +73,10 @@ public abstract class FocusIndicatorHelper implements
                 }
             };
 
-    private static final RectEvaluator RECT_EVALUATOR = new RectEvaluator(new Rect());
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private static final RectEvaluator RECT_EVALUATOR = Utilities.IS_KITKAT ? new RectEvaluator()
+            : new RectEvaluator(new Rect());
+
     private static final Rect sTempRect1 = new Rect();
     private static final Rect sTempRect2 = new Rect();
 

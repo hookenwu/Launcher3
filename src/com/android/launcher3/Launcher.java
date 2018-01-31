@@ -57,6 +57,7 @@ import android.os.SystemClock;
 import android.os.Trace;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -372,9 +373,14 @@ public class Launcher extends BaseActivity
             mLauncherCallbacks.preOnCreate();
         }
 
-        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
-        wallpaperColorInfo.setOnThemeChangeListener(this);
-        overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
+        if(Utilities.ATLEAST_LOLLIPOP){
+            WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
+            wallpaperColorInfo.setOnThemeChangeListener(this);
+            overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
+        }else if(Utilities.IS_KITKAT){
+
+        }
+
 
         super.onCreate(savedInstanceState);
 
@@ -395,7 +401,8 @@ public class Launcher extends BaseActivity
         mModel = app.setLauncher(this);
         mModelWriter = mModel.getWriter(mDeviceProfile.isVerticalBarLayout());
         mIconCache = app.getIconCache();
-        mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
+        mAccessibilityDelegate = Utilities.ATLEAST_LOLLIPOP
+                ? new LauncherAccessibilityDelegate(this) :null;
 
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
@@ -1851,10 +1858,16 @@ public class Launcher extends BaseActivity
 
         TextKeyListener.getInstance().release();
 
-        ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
-                .removeAccessibilityStateChangeListener(this);
+        if(Utilities.ATLEAST_LOLLIPOP){
+            ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
+                    .removeAccessibilityStateChangeListener(this);
+        }else{
 
-        WallpaperColorInfo.getInstance(this).setOnThemeChangeListener(null);
+        }
+
+        if(Utilities.ATLEAST_LOLLIPOP){
+            WallpaperColorInfo.getInstance(this).setOnThemeChangeListener(null);
+        }
 
         LauncherAnimUtils.onDestroyActivity();
 
@@ -2602,7 +2615,7 @@ public class Launcher extends BaseActivity
                     String id = ((ShortcutInfo) info).getDeepShortcutId();
                     String packageName = intent.getPackage();
                     DeepShortcutManager.getInstance(this).startShortcut(
-                            packageName, id, intent.getSourceBounds(), optsBundle, info.user);
+                            packageName, id, intent, optsBundle, info.user);
                 } else {
                     // Could be launching some bookkeeping activity
                     startActivity(intent, optsBundle);
@@ -3611,6 +3624,15 @@ public class Launcher extends BaseActivity
         InstallShortcutReceiver.disableAndFlushInstallQueue(
                 InstallShortcutReceiver.FLAG_LOADER_RUNNING, this);
 
+        if (Utilities.ATLEAST_MARSHMALLOW) {
+            boolean hasNotificationAccess = false;
+            for (String packageName : NotificationManagerCompat.getEnabledListenerPackages(this)) {
+                hasNotificationAccess |= packageName.equals(getApplicationContext().getPackageName());
+            }
+            if (!hasNotificationAccess)
+                startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+        }
+
         NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
 
         if (mLauncherCallbacks != null) {
@@ -3981,6 +4003,13 @@ public class Launcher extends BaseActivity
 
     @Override
     public boolean onKeyShortcut(int keyCode, KeyEvent event) {
+
+        boolean result = super.onKeyShortcut(keyCode, event);
+
+        if(Utilities.IS_KITKAT) {
+            return result;
+        }
+
         if (event.hasModifiers(KeyEvent.META_CTRL_ON)) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_A:
@@ -4008,7 +4037,7 @@ public class Launcher extends BaseActivity
                     break;
             }
         }
-        return super.onKeyShortcut(keyCode, event);
+        return result;
     }
 
     public static CustomAppWidget getCustomAppWidget(String name) {

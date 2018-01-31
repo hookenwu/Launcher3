@@ -16,11 +16,13 @@
 
 package com.android.launcher3.compat;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionCallback;
 import android.content.pm.PackageInstaller.SessionInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
@@ -38,6 +40,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     private static final boolean DEBUG = false;

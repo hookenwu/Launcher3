@@ -21,6 +21,8 @@ import android.content.Context;
 import android.content.pm.PackageInstaller;
 import android.support.annotation.NonNull;
 
+import com.android.launcher3.Utilities;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,7 +38,14 @@ public abstract class PackageInstallerCompat {
     public static PackageInstallerCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                sInstance = new PackageInstallerCompatVL(context);
+
+                if(Utilities.ATLEAST_LOLLIPOP){
+                    sInstance = new PackageInstallerCompatVL(context);
+                }else{
+                    sInstance = new PackageInstallerCompatV16(context);
+                }
+
+
             }
             return sInstance;
         }

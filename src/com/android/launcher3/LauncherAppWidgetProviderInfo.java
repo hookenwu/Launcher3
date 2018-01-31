@@ -1,16 +1,25 @@
 package com.android.launcher3;
 
+import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Process;
 import android.os.UserHandle;
+import android.support.annotation.AnyRes;
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+import static android.content.pm.PackageManager.*;
 
 /**
  * This class is a thin wrapper around the framework AppWidgetProviderInfo class. This class affords
@@ -96,19 +105,38 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
                 (minResizeHeight + widgetPadding.top + widgetPadding.bottom) / smallestCellHeight));
     }
 
+
     public String getLabel(PackageManager packageManager) {
         if (isCustomWidget) {
             return Utilities.trim(label);
         }
-        return super.loadLabel(packageManager);
+        if(Utilities.ATLEAST_LOLLIPOP){
+            return super.loadLabel(packageManager);
+        }else{
+            return label;
+        }
     }
 
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public Drawable getIcon(Context context, IconCache cache) {
-        if (isCustomWidget) {
+        if (isCustomWidget || Utilities.IS_KITKAT) {
             return cache.getFullResIcon(provider.getPackageName(), icon);
         }
         return super.loadIcon(context, LauncherAppState.getIDP(context).fillResIconDpi);
     }
+
+    public Drawable loadPreviewImageCompat(@NonNull Context context,int density){
+        if(Utilities.ATLEAST_LOLLIPOP){
+            return loadPreviewImage(context,density);
+        }
+        return context.getPackageManager()
+                .getDrawable(provider.getPackageName(),
+                        previewImage,null);
+    }
+
+
+
 
     public String toString(PackageManager pm) {
         if (isCustomWidget) {

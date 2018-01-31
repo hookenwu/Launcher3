@@ -35,6 +35,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsGridAdapter;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
@@ -96,16 +97,18 @@ public class AppsSearchContainerLayout extends FrameLayout
         super.onFinishInflate();
         mSearchInput = findViewById(R.id.search_box_input);
         mDivider = findViewById(R.id.search_divider);
-        mElevationController = new HeaderElevationController(mDivider);
 
-        // Update the hint to contain the icon.
-        // Prefix the original hint with two spaces. The first space gets replaced by the icon
-        // using span. The second space is used for a singe space character between the hint
-        // and the icon.
-        SpannableString spanned = new SpannableString("  " + mSearchInput.getHint());
-        spanned.setSpan(new TintedDrawableSpan(getContext(), R.drawable.ic_allapps_search),
-                0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-        mSearchInput.setHint(spanned);
+        if(Utilities.ATLEAST_LOLLIPOP){
+            mElevationController = new HeaderElevationController(mDivider);
+            // Update the hint to contain the icon.
+            // Prefix the original hint with two spaces. The first space gets replaced by the icon
+            // using span. The second space is used for a singe space character between the hint
+            // and the icon.
+            SpannableString spanned = new SpannableString("  " + mSearchInput.getHint());
+            spanned.setSpan(new TintedDrawableSpan(getContext(), R.drawable.ic_allapps_search),
+                    0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            mSearchInput.setHint(spanned);
+        }
 
         DeviceProfile dp = mLauncher.getDeviceProfile();
         if (!dp.isVerticalBarLayout()) {
@@ -128,7 +131,9 @@ public class AppsSearchContainerLayout extends FrameLayout
             AlphabeticalAppsList appsList, AllAppsRecyclerView recyclerView) {
         mApps = appsList;
         mAppsRecyclerView = recyclerView;
-        mAppsRecyclerView.addOnScrollListener(mElevationController);
+        if(Utilities.ATLEAST_LOLLIPOP){
+            mAppsRecyclerView.addOnScrollListener(mElevationController);
+        }
         mAdapter = (AllAppsGridAdapter) mAppsRecyclerView.getAdapter();
         mSearchBarController.initialize(
                 new DefaultAppSearchAlgorithm(appsList.getApps()), mSearchInput, mLauncher, this);
@@ -146,7 +151,9 @@ public class AppsSearchContainerLayout extends FrameLayout
 
     @Override
     public void reset() {
-        mElevationController.reset();
+        if(Utilities.ATLEAST_LOLLIPOP){
+            mElevationController.reset();
+        }
         mSearchBarController.reset();
     }
 
@@ -200,7 +207,9 @@ public class AppsSearchContainerLayout extends FrameLayout
     }
 
     private void notifyResultChanged() {
-        mElevationController.reset();
+        if (Utilities.ATLEAST_LOLLIPOP){
+            mElevationController.reset();
+        }
         mAppsRecyclerView.onSearchResultsChanged();
     }
 

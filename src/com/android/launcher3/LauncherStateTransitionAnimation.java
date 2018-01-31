@@ -298,14 +298,19 @@ public class LauncherStateTransitionAnimation {
             float startRadius = pCb.getMaterialRevealViewStartFinalRadius();
             AnimatorListenerAdapter listener = pCb.getMaterialRevealViewAnimatorListener(
                     revealView, buttonView);
-            Animator reveal = new CircleRevealOutlineProvider(width / 2, height / 2,
-                    startRadius, revealRadius).createRevealAnimator(revealView);
-            reveal.setDuration(revealDuration);
-            reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
-            if (listener != null) {
-                reveal.addListener(listener);
+
+            if(Utilities.ATLEAST_LOLLIPOP){
+                Animator reveal = new CircleRevealOutlineProvider(width / 2, height / 2,
+                        startRadius, revealRadius).createRevealAnimator(revealView);
+                reveal.setDuration(revealDuration);
+                reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
+                if (listener != null) {
+                    reveal.addListener(listener);
+                }
+                animation.play(reveal);
             }
-            animation.play(reveal);
+
+
 
             animation.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -602,19 +607,22 @@ public class LauncherStateTransitionAnimation {
                 });
                 animation.play(invalidateScrim);
 
-                // Animate the all apps button
-                float finalRadius = pCb.getMaterialRevealViewStartFinalRadius();
-                AnimatorListenerAdapter listener =
-                        pCb.getMaterialRevealViewAnimatorListener(revealView, buttonView);
-                Animator reveal = new CircleRevealOutlineProvider(width / 2, height / 2,
-                        revealRadius, finalRadius).createRevealAnimator(revealView);
-                reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
-                reveal.setDuration(revealDuration);
-                reveal.setStartDelay(itemsAlphaStagger);
-                if (listener != null) {
-                    reveal.addListener(listener);
+                if(Utilities.ATLEAST_LOLLIPOP){
+                    // Animate the all apps button
+                    float finalRadius = pCb.getMaterialRevealViewStartFinalRadius();
+                    AnimatorListenerAdapter listener =
+                            pCb.getMaterialRevealViewAnimatorListener(revealView, buttonView);
+                    Animator reveal = new CircleRevealOutlineProvider(width / 2, height / 2,
+                            revealRadius, finalRadius).createRevealAnimator(revealView);
+                    reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
+                    reveal.setDuration(revealDuration);
+                    reveal.setStartDelay(itemsAlphaStagger);
+                    if (listener != null) {
+                        reveal.addListener(listener);
+                    }
+                    animation.play(reveal);
                 }
-                animation.play(reveal);
+
             }
 
             animation.addListener(new AnimatorListenerAdapter() {

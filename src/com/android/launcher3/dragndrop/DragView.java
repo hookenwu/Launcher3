@@ -54,6 +54,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.config.FeatureFlags;
@@ -184,7 +185,11 @@ public class DragView extends View {
         mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
 
         mBlurSizeOutline = getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
-        setElevation(getResources().getDimension(R.dimen.drag_elevation));
+
+        if(Utilities.ATLEAST_LOLLIPOP){
+            setElevation(getResources().getDimension(R.dimen.drag_elevation));
+        }
+
     }
 
     /**
@@ -315,7 +320,7 @@ public class DragView extends View {
      */
     private Drawable getFullDrawable(ItemInfo info, LauncherAppState appState, Object[] outObj) {
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-            LauncherActivityInfo activityInfo = LauncherAppsCompat.getInstance(mLauncher)
+            LauncherActivityInfoCompat activityInfo = LauncherAppsCompat.getInstance(mLauncher)
                     .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;
             return (activityInfo != null) ? appState.getIconCache()
@@ -439,14 +444,27 @@ public class DragView extends View {
                 mPaint.setAlpha(alpha);
             }
             canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
+
+
+
             if (crossFade) {
                 mPaint.setAlpha((int) (255 * mCrossFadeProgress));
-                final int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
-                float sX = (mBitmap.getWidth() * 1.0f) / mCrossFadeBitmap.getWidth();
-                float sY = (mBitmap.getHeight() * 1.0f) / mCrossFadeBitmap.getHeight();
-                canvas.scale(sX, sY);
-                canvas.drawBitmap(mCrossFadeBitmap, 0.0f, 0.0f, mPaint);
-                canvas.restoreToCount(saveCount);
+
+                if(Utilities.ATLEAST_LOLLIPOP){
+                    final int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+                    float sX = (mBitmap.getWidth() * 1.0f) / mCrossFadeBitmap.getWidth();
+                    float sY = (mBitmap.getHeight() * 1.0f) / mCrossFadeBitmap.getHeight();
+                    canvas.scale(sX, sY);
+                    canvas.drawBitmap(mCrossFadeBitmap, 0.0f, 0.0f, mPaint);
+                    canvas.restoreToCount(saveCount);
+                }else{
+                    canvas.save();
+                    float sX = (mBitmap.getWidth() * 1.0f) / mCrossFadeBitmap.getWidth();
+                    float sY = (mBitmap.getHeight() * 1.0f) / mCrossFadeBitmap.getHeight();
+                    canvas.scale(sX, sY);
+                    canvas.drawBitmap(mCrossFadeBitmap, 0.0f, 0.0f, mPaint);
+                    canvas.restore();
+                }
             }
         }
 
@@ -491,9 +509,14 @@ public class DragView extends View {
             Themes.setColorScaleOnMatrix(color, m2);
             m1.postConcat(m2);
 
-            animateFilterTo(m1.getArray());
+            if (Utilities.ATLEAST_LOLLIPOP) {
+                animateFilterTo(m1.getArray());
+            } else {
+                mPaint.setColorFilter(new ColorMatrixColorFilter(m1));
+                invalidate();
+            }
         } else {
-            if (mCurrentFilter == null) {
+            if (!Utilities.ATLEAST_LOLLIPOP || mCurrentFilter == null) {
                 updateColorFilter();
             } else {
                 animateFilterTo(new ColorMatrix().getArray());
@@ -501,6 +524,7 @@ public class DragView extends View {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void animateFilterTo(float[] targetFilter) {
         float[] oldFilter = mCurrentFilter == null ? new ColorMatrix().getArray() : mCurrentFilter;
         mCurrentFilter = Arrays.copyOf(oldFilter, oldFilter.length);
@@ -684,5 +708,10 @@ public class DragView extends View {
         public int getIntrinsicWidth() {
             return mSize;
         }
+    }
+
+    public static void setColorScale(int color, ColorMatrix target) {
+        target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
+                Color.blue(color) / 255f, Color.alpha(color) / 255f);
     }
 }

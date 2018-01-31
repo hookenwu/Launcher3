@@ -194,33 +194,84 @@ public class InvariantDeviceProfile {
             while (((type = parser.next()) != XmlPullParser.END_TAG ||
                     parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
                 if ((type == XmlPullParser.START_TAG) && "profile".equals(parser.getName())) {
-                    TypedArray a = context.obtainStyledAttributes(
-                            Xml.asAttributeSet(parser), R.styleable.InvariantDeviceProfile);
-                    int numRows = a.getInt(R.styleable.InvariantDeviceProfile_numRows, 0);
-                    int numColumns = a.getInt(R.styleable.InvariantDeviceProfile_numColumns, 0);
-                    float iconSize = a.getFloat(R.styleable.InvariantDeviceProfile_iconSize, 0);
-                    profiles.add(new InvariantDeviceProfile(
-                            a.getString(R.styleable.InvariantDeviceProfile_name),
-                            a.getFloat(R.styleable.InvariantDeviceProfile_minWidthDps, 0),
-                            a.getFloat(R.styleable.InvariantDeviceProfile_minHeightDps, 0),
-                            numRows,
-                            numColumns,
-                            a.getInt(R.styleable.InvariantDeviceProfile_numFolderRows, numRows),
-                            a.getInt(R.styleable.InvariantDeviceProfile_numFolderColumns, numColumns),
-                            a.getInt(R.styleable.InvariantDeviceProfile_minAllAppsPredictionColumns, numColumns),
-                            iconSize,
-                            a.getFloat(R.styleable.InvariantDeviceProfile_landscapeIconSize, iconSize),
-                            a.getFloat(R.styleable.InvariantDeviceProfile_iconTextSize, 0),
-                            a.getInt(R.styleable.InvariantDeviceProfile_numHotseatIcons, numColumns),
-                            a.getResourceId(R.styleable.InvariantDeviceProfile_defaultLayoutId, 0),
-                            a.getResourceId(R.styleable.InvariantDeviceProfile_demoModeLayoutId, 0)));
-                    a.recycle();
+//                    TypedArray a = context.obtainStyledAttributes(
+//                            Xml.asAttributeSet(parser), R.styleable.InvariantDeviceProfile);
+//                    int numRows = a.getInt(R.styleable.InvariantDeviceProfile_numRows, 0);
+//                    int numColumns = a.getInt(R.styleable.InvariantDeviceProfile_numColumns, 0);
+//                    float iconSize = a.getFloat(R.styleable.InvariantDeviceProfile_iconSize, 0);
+//                    profiles.add(new InvariantDeviceProfile(
+//                            a.getString(R.styleable.InvariantDeviceProfile_name),
+//                            a.getFloat(R.styleable.InvariantDeviceProfile_minWidthDps, 0),
+//                            a.getFloat(R.styleable.InvariantDeviceProfile_minHeightDps, 0),
+//                            numRows,
+//                            numColumns,
+//                            a.getInt(R.styleable.InvariantDeviceProfile_numFolderRows, numRows),
+//                            a.getInt(R.styleable.InvariantDeviceProfile_numFolderColumns, numColumns),
+//                            a.getInt(R.styleable.InvariantDeviceProfile_minAllAppsPredictionColumns, numColumns),
+//                            iconSize,
+//                            a.getFloat(R.styleable.InvariantDeviceProfile_landscapeIconSize, iconSize),
+//                            a.getFloat(R.styleable.InvariantDeviceProfile_iconTextSize, 0),
+//                            a.getInt(R.styleable.InvariantDeviceProfile_numHotseatIcons, numColumns),
+//                            a.getResourceId(R.styleable.InvariantDeviceProfile_defaultLayoutId, 0),
+//                            a.getResourceId(R.styleable.InvariantDeviceProfile_demoModeLayoutId, 0)));
+//                    a.recycle();
+                    parseProfileXmlToObjectTemp(profiles,parser);
                 }
             }
         } catch (IOException|XmlPullParserException e) {
             throw new RuntimeException(e);
         }
         return profiles;
+    }
+
+
+    private final static String PROFILE_NAME = "name";
+    private final static String PROFILE_MINWIDTHDPS = "minWidthDps";
+    private final static String PROFILE_MINHEIGHTDPS = "minHeightDps";
+    private final static String PROFILE_NUMROWS = "numRows";
+    private final static String PROFILE_NUMCOLUMNS = "numColumns";
+    private final static String PROFILE_NUMFOLDERROWS = "numFolderRows";
+    private final static String PROFILE_NUMFOLDERCOLUMNS = "numFolderColumns";
+    private final static String PROFILE_MINALLAPPSPREDICTIONCOLUMNS = "minAllAppsPredictionColumns";
+    private final static String PROFILE_ICONSIZE = "iconSize";
+    private final static String PROFILE_ICONTEXTSIZE = "iconTextSize";
+    private final static String PROFILE_NUMHOTSEATICONS = "numHotseatIcons";
+    private final static String PROFILE_DEFAULTLAYOUTID = "defaultLayoutId";
+    private final static String PROFILE_NAMESPACE = "http://schemas.android.com/apk/res-auto/com.android.launcher3";
+    private void parseProfileXmlToObjectTemp(
+            ArrayList<InvariantDeviceProfile> profiles,
+            XmlResourceParser parser){
+
+        String name = parser.getAttributeValue(PROFILE_NAMESPACE,PROFILE_NAME);
+        int minWidthDps = parser.getAttributeIntValue(PROFILE_NAMESPACE,PROFILE_MINWIDTHDPS,0);
+        int minHeightDps = parser.getAttributeIntValue(PROFILE_NAMESPACE,PROFILE_MINHEIGHTDPS,0);
+        int numRows = parser.getAttributeIntValue(PROFILE_NAMESPACE,PROFILE_NUMROWS,0);
+        int numColumns = parser.getAttributeIntValue(PROFILE_NAMESPACE,PROFILE_NUMCOLUMNS,0);
+        int numFolderRows = parser.getAttributeIntValue(PROFILE_NAMESPACE,PROFILE_NUMFOLDERROWS,0);
+        int numFolderColumns = parser.getAttributeIntValue(PROFILE_NAMESPACE,PROFILE_NUMFOLDERCOLUMNS,0);
+        int minAllAppsPredictionColumns = parser.getAttributeIntValue(
+                PROFILE_NAMESPACE,PROFILE_MINALLAPPSPREDICTIONCOLUMNS,0);
+        int iconSize = parser.getAttributeIntValue(PROFILE_NAMESPACE,PROFILE_ICONSIZE,0);
+        float iconTextSize = parser.getAttributeFloatValue(PROFILE_NAMESPACE,PROFILE_ICONTEXTSIZE,0.0f);
+        int numHotseatIcons = parser.getAttributeIntValue(PROFILE_NAMESPACE,PROFILE_NUMHOTSEATICONS,0);
+        String defaultLaynumHotseatIconsoutId = parser.getAttributeValue(PROFILE_NAMESPACE,PROFILE_DEFAULTLAYOUTID);
+        int id = Integer.parseInt(defaultLaynumHotseatIconsoutId.substring(1)) ;
+        profiles.add(new InvariantDeviceProfile(
+                name,
+                minWidthDps,
+                minHeightDps,
+                numRows,
+                numColumns,
+                numFolderRows != 0 ? numFolderRows : numRows,
+                numFolderColumns != 0 ? numFolderColumns : numColumns,
+                minAllAppsPredictionColumns != 0 ? minAllAppsPredictionColumns : numColumns,
+                iconSize,
+                iconSize,// a.getFloat(R.styleable.InvariantDeviceProfile_landscapeIconSize, iconSize),
+                iconTextSize,
+                numHotseatIcons != 0 ? numHotseatIcons : numColumns,
+                id,
+                id));
+
     }
 
     private int getLauncherIconDensity(int requiredSize) {

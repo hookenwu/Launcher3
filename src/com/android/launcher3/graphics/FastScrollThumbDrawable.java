@@ -24,7 +24,10 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+
+import com.android.launcher3.Utilities;
 
 public class FastScrollThumbDrawable extends Drawable {
 
@@ -55,9 +58,17 @@ public class FastScrollThumbDrawable extends Drawable {
         // other 3 corners.
         float diameter = 2 * r;
         float r2 = r / 5;
-        mPath.addRoundRect(bounds.left, bounds.top, bounds.left + diameter, bounds.top + diameter,
-                new float[] {r, r, r, r, r2, r2, r, r},
-                Path.Direction.CCW);
+        if(Utilities.ATLEAST_LOLLIPOP){
+            mPath.addRoundRect(bounds.left, bounds.top, bounds.left + diameter, bounds.top + diameter,
+                    new float[] {r, r, r, r, r2, r2, r, r},
+                    Path.Direction.CCW);
+        }else{
+            mPath.addRoundRect(
+                    new RectF(bounds.left, bounds.top, bounds.left + diameter, bounds.top + diameter),
+                    r,r,
+                    Path.Direction.CCW);
+        }
+
 
         sMatrix.setRotate(-45, bounds.left + r, bounds.top + r);
         if (mIsRtl) {

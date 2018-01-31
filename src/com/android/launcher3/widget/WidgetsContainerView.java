@@ -128,12 +128,16 @@ public class WidgetsContainerView extends BaseContainerView
         if (mWidgetInstructionToast != null) {
             mWidgetInstructionToast.cancel();
         }
+        if(Utilities.ATLEAST_LOLLIPOP){
+            CharSequence msg = Utilities.wrapForTts(
+                    getContext().getText(R.string.long_press_widget_to_add),
+                    getContext().getString(R.string.long_accessible_way_to_add));
+            mWidgetInstructionToast = Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT);
+            mWidgetInstructionToast.show();
 
-        CharSequence msg = Utilities.wrapForTts(
-                getContext().getText(R.string.long_press_widget_to_add),
-                getContext().getString(R.string.long_accessible_way_to_add));
-        mWidgetInstructionToast = Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT);
-        mWidgetInstructionToast.show();
+        }else {
+
+        }
     }
 
     @Override
