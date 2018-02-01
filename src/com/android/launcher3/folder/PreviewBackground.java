@@ -38,6 +38,7 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Themes;
 
 /**
@@ -131,7 +132,13 @@ public class PreviewBackground {
     public void setup(Launcher launcher, View invalidateDelegate,
                       int availableSpace, int topPadding) {
         mInvalidateDelegate = invalidateDelegate;
-        mBgColor = Themes.getAttrColor(launcher, android.R.attr.colorPrimary);
+
+        if(Utilities.ATLEAST_LOLLIPOP){
+            mBgColor = Themes.getAttrColor(launcher, android.R.attr.colorPrimary);
+        }else{
+            mBgColor = Color.WHITE;
+        }
+
 
         DeviceProfile grid = launcher.getDeviceProfile();
         final int previewSize = grid.folderIconSizePx;

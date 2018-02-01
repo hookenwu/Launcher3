@@ -162,11 +162,7 @@ public class FolderAnimationManager {
         final float xDistance = initialX - lp.x;
         final float yDistance = initialY - lp.y;
 
-        // Set up the Folder background.
-        final int finalColor = Themes.getAttrColor(mContext, android.R.attr.colorPrimary);
-        final int initialColor =
-                ColorUtils.setAlphaComponent(finalColor, mPreviewBackground.getBackgroundAlpha());
-        mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);
+
 
         // Set up the reveal animation that clips the Folder.
         int totalOffsetX = paddingOffsetX + previewItemOffsetX;
@@ -198,10 +194,18 @@ public class FolderAnimationManager {
         play(a, getAnimator(mFolder, View.TRANSLATION_X, xDistance, 0f));
         play(a, getAnimator(mFolder, View.TRANSLATION_Y, yDistance, 0f));
         play(a, getAnimator(mFolder, SCALE_PROPERTY, initialScale, finalScale));
-        play(a, getAnimator(mFolderBackground, "color", initialColor, finalColor));
         play(a, mFolderIcon.mFolderName.createTextAlphaAnimator(!mIsOpening));
 
         if(Utilities.ATLEAST_LOLLIPOP){
+
+            // Set up the Folder background.
+            final int finalColor = Themes.getAttrColor(mContext, android.R.attr.colorPrimary);
+            final int initialColor =
+                    ColorUtils.setAlphaComponent(finalColor, mPreviewBackground.getBackgroundAlpha());
+            mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);
+
+            play(a, getAnimator(mFolderBackground, "color", initialColor, finalColor));
+
             RoundedRectRevealOutlineProvider outlineProvider = new RoundedRectRevealOutlineProvider(
                     initialRadius, finalRadius, startRect, endRect) {
                 @Override
